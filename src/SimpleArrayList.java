@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
  * is structurally modified at any time after the iterator is created, in any way except through the
  * iterator's own remove or add methods, the iterator will throw a ConcurrentModificationException.
  * Thus, in the face of concurrent modification, the iterator fails quickly and cleanly, rather than
- * risking arbitrary, non-deterministic behavior at an undetermined time in the future."  Our lists
+ * risking arbitrary, non-deterministic behavior at an undetermined time in the future." Our lists
  * do *not* fail fast.
  */
 public class SimpleArrayList<T> implements SimpleList<T> {
@@ -82,6 +82,11 @@ public class SimpleArrayList<T> implements SimpleList<T> {
        */
       int pos = 0;
 
+      /**
+       * The setPrevious used to show whether the last call is previous or not.
+       */
+      boolean setPrevious = false;
+
       // +---------+-------------------------------------------------------
       // | Helpers |
       // +---------+
@@ -128,9 +133,10 @@ public class SimpleArrayList<T> implements SimpleList<T> {
       } // hasPrevious()
 
       public T next() {
-         if (!this.hasNext()) {
+        if (!this.hasNext()) {
           throw new NoSuchElementException();
-         } //
+        } //
+        this.setPrevious = false;
         return SimpleArrayList.this.values[this.pos++];
       } // next()
 
@@ -146,7 +152,8 @@ public class SimpleArrayList<T> implements SimpleList<T> {
         if (!this.hasPrevious())
           throw new NoSuchElementException();
         // STUB
-        return null;
+        this.setPrevious = true;
+        return SimpleArrayList.this.values[--this.pos];
       } // previous()
 
       public void remove() {
@@ -156,8 +163,16 @@ public class SimpleArrayList<T> implements SimpleList<T> {
       } // remove()
 
       public void set(T val) {
-        // STUB
-        throw new UnsupportedOperationException();
+        if (this.setPrevious) {
+          SimpleArrayList.this.values[this.pos] = val;
+        } // if(this.setPrevious)
+        else {
+          if (this.pos <= 0) {
+            throw new IllegalStateException();
+          } // if
+          SimpleArrayList.this.values[this.pos - 1] = val;
+        } // else
+        this.setPrevious = false;
       } // set(T)
     };
   } // listIterator()

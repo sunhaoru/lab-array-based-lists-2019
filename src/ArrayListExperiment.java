@@ -37,13 +37,26 @@ public class ArrayListExperiment {
     // Add some initial strings to our list and print it out.
     addStrings(strings, new String[] {"a", "b", "c"});
     pen.println("Initial array: " + strings);
-
+    
     // Create some iterators for the list
     Iterator<String> it = strings.iterator();
     ListIterator<String> lit = strings.listIterator();
     ListIterator<String> lit1 = strings.listIterator();
     ListIterator<String> lit2 = strings.listIterator();
-
+    
+    // Check set called after next()
+    //lit.set("error");
+    pen.println("next() val: " + lit.next());
+    lit.set("d");
+    pen.println("Set array: " + strings);
+    
+    // Check set called after previous()
+    pen.println("previous() val: " + lit.previous());
+    lit.set("e");
+    pen.println("Set array: " + strings);
+    pen.println("next() val: " + lit.next());
+    lit.set("f");
+    pen.println("Set array: " + strings);
     // And we're done
     pen.close();
   } // main(String[])
